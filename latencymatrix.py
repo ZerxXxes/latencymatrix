@@ -2,6 +2,14 @@
 
 import sys, getopt, pxssh, getpass, thread
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
 def main(argv):
   #initate variables
   inputfile = ''
@@ -44,8 +52,11 @@ def remoteping(currenthost, allhosts, username, password):
       s.login (currenthost, username, password)
       for target in allhosts:
         if target != currenthost:
-          print "mesure RTT between", currenthost, "<--->", target
+          print bcolors.OKGREEN + "mesure RTT between", currenthost, "<--->", target + bcolors.ENDC
           s.sendline ("fping -qc 5 " + target)   # do 5 icmp echo
+          s.prompt()
+          print s.before
+          s.sendline ("traceroute -nAN 32 " + target) #traceroute to target and find AS_PATH
           s.prompt()             # match the prompt
           print s.before          # print everything before the prompt.
       s.logout()
