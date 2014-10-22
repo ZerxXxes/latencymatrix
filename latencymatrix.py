@@ -65,9 +65,12 @@ def remoteping(currenthost, allhosts, username, password):
         if target != currenthost:
           print bcolors.OKGREEN + "mesure RTT between", currenthost, "<--->", target + bcolors.ENDC
           s.sendline ("fping -qc 5 " + target)   # do 5 icmp echo
+          s.readline() #hide the command sent to host
           s.prompt()
           print s.before
+          print bcolors.OKGREEN + "mesure path between", currenthost, "<--->", target + bcolors.ENDC
           s.sendline ("traceroute -nAN 32 " + target) #traceroute to target and find AS_PATH
+          s.readline() 
           s.prompt()             # match the prompt
           print s.before          # print everything before the prompt.
       s.logout()
