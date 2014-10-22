@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import sys, getopt, pxssh, getpass, thread
+import sys, getopt, pxssh, getpass, thread, os.path
 
 class bcolors:
     HEADER = '\033[95m'
@@ -16,15 +16,15 @@ def main(argv):
   interactive = 0
   #check for arguments
   try:
-    opts, args = getopt.getopt(argv,"ihf:",["file="])
+    opts, args = getopt.getopt(argv,"ihf:",["file=", "help"])
   #if no arguments show error and syntaxhelp
   except getopt.GetoptError:
-    print 'latencymatrix.py -f <inputfile>'
+    print "latencymatrix.py -f <inputfile>"
     sys.exit(2)
   for opt, arg in opts:
     #show help
-    if opt == '-h':
-      print 'latencymatrix.py -f <inputfile>'
+    if opt in ("-h", "--help"):
+      print "usage: latencymatrix [--interactive] [--automatic] [--help] [--file <inputfile>]"
       sys.exit()
     if opt in ("-f", "--file"):
       inputfile = arg
