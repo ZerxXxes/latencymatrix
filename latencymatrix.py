@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, getopt, pxssh, getpass, thread, os.path
+import sys, getopt, pxssh, getpass, thread, os.path, subprocess
 
 class bcolors:
     HEADER = '\033[95m'
@@ -78,6 +78,26 @@ def remoteping(currenthost, allhosts, username, password):
     print "pxssh failed on login."
     print str(e)
   return
+
+def installsshkey(hostmatrix):
+  #check if rsa-keys for this user already exists
+  if os.path.exists(os.path.expanduser('~/.ssh/id_rsa.pub')):
+    print "rsa-keys found, installing on hosts..."
+  else:
+  #if no rsa-key found, generate new ones
+    print "no rsa-key found, generating..."
+    subprocess.call("ssh-keygen" + ' -b 2048 -t rsa -f .ssh/id_rsa -q -N ""', shell=True)
+    print "done"
+  for currenthost in hostmatrix:
+    #promt users about login to each server and then append user public key
+    username = raw_input('username: ')
+    password = getpass.getpass('password: ')
+    s = pxssh.pxssh()
+    s.login (currenthost, username, password)
+    with open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r') as f:
+      sendline ("echo " + f.readline() + " | cat >> .ssh/authorized_keys")
+    f.closed
+  pass
 
 if __name__ == "__main__":
   main(sys.argv[1:])
