@@ -64,7 +64,7 @@ def remoteping(currenthost, allhosts, username, password):
       for target in allhosts:
         if target != currenthost:
           print bcolors.OKGREEN + "mesure RTT between", currenthost, "<--->", target + bcolors.ENDC
-          s.sendline ("fping -qc 5 " + target)   # do 5 icmp echo
+          s.sendline ("fping -C 20 -q -B1 -r1 -i10 " + target)   # do 5 icmp echo
           s.readline() #hide the command sent to host
           s.prompt()
           print s.before
@@ -97,6 +97,7 @@ def installsshkey(hostmatrix):
     with open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r') as f:
       sendline ("echo " + f.readline() + " | cat >> .ssh/authorized_keys")
     f.closed
+    s.logout()
   pass
 
 if __name__ == "__main__":
