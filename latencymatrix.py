@@ -16,7 +16,7 @@ def main(argv):
   interactive = 0
   #check for arguments
   try:
-    opts, args = getopt.getopt(argv,"ihf:",["file=", "help"])
+    opts, args = getopt.getopt(argv,"ihfk:",["file=", "help","install-ssh-keys"])
   #if no arguments show error and syntaxhelp
   except getopt.GetoptError:
     print "latencymatrix.py -f <inputfile>"
@@ -24,7 +24,7 @@ def main(argv):
   for opt, arg in opts:
     #show help
     if opt in ("-h", "--help"):
-      print "usage: latencymatrix [--interactive] [--automatic] [--help] [--file <inputfile>]"
+      print "usage: latencymatrix [--interactive] [--automatic] [--help] [--file <inputfile>] [install-ssh-keys]"
       sys.exit()
     if opt in ("-f", "--file"):
       inputfile = arg
@@ -39,6 +39,8 @@ def main(argv):
     if opt in ("-i", "--interactive"):
       interactive = 1
       print "Use interactive login"
+    if opt in ("-k", "--install-ssh-keys"):
+      installsshkey(hostmatrix) 
   #Start DEBUG
   print 'Input file is ', inputfile
   print 'hosts found are:\n', 
@@ -64,7 +66,7 @@ def remoteping(currenthost, allhosts, username, password):
       for target in allhosts:
         if target != currenthost:
           print bcolors.OKGREEN + "mesure RTT between", currenthost, "<--->", target + bcolors.ENDC
-          s.sendline ("fping -C 20 -q -B1 -r1 -i10 " + target)   # do 5 icmp echo
+          s.sendline ("fping -C 20 -q -B1 -r1 -i10   " + target)   # do 5 icmp echo
           s.readline() #hide the command sent to host
           s.prompt()
           print s.before
